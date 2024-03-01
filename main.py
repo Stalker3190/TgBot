@@ -45,11 +45,9 @@ def getKvestsOfEachRang(update: Update, context: CallbackContext):
 
         kvest_rows = [KvestRow(*row) for row in results]
 
-        # Получите уникальное название ранга
         rang_name = kvest_rows[0].nameOfRang
         update.message.reply_text(f"Ранг {rang_name}:")
 
-        # Выведите шесть случайных квестов для этого ранга
         random_kvests = random.sample(kvest_rows[1:], min(6, len(kvest_rows)-1))
         for kvest in random_kvests:
             kvest_name = kvest.nameOfKvest
