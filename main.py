@@ -1,9 +1,23 @@
-# importing the required libraries and functions  
+# importing the required libraries and functions 
+import mysql.connector 
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, Filters
 
 the_updater = Updater("7023554726:AAHC5hbpxBDnGJWFjqBG3f4-X7s7FlEpk_Y", use_context=True)
+
+# connecting with MySQL
+db_config = {
+    'host': '127.0.0.1',
+    'user': 'root',
+    'password': '18062003myspideR',
+    'database': 'drevokvestov',
+}
   
+  
+conn = mysql.connector.connect(**db_config)
+cursor = conn.cursor()
+
+
 def the_start(update: Update, context: CallbackContext):  
     update.message.reply_text(  
         "Здравствуй! Здесь ты можешь получить информацию о квестах клуба ролевого фехтования \"Своё дело\""  
@@ -62,5 +76,5 @@ the_updater.dispatcher.add_handler(MessageHandler(Filters.command, unknownCommma
 the_updater.dispatcher.add_handler(MessageHandler(Filters.text, unknownText))  
 
 
-# running the bot  
-the_updater.start_polling()  
+# # running the bot  
+# the_updater.start_polling()  
