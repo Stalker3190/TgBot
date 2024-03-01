@@ -1,4 +1,5 @@
 # importing the required libraries and functions 
+import random
 import mysql.connector 
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, Filters
@@ -20,7 +21,7 @@ cursor = conn.cursor()
 
 def the_start(update: Update, context: CallbackContext):  
     update.message.reply_text(  
-        "Здравствуй! Здесь ты можешь получить информацию о квестах клуба ролевого фехтования \"Своё дело\""  
+        "Доброго времени суток! Работаем."  
         )  
   
 def the_help(update: Update, context: CallbackContext):  
@@ -32,9 +33,17 @@ def the_help(update: Update, context: CallbackContext):
         /changekvest - внести изменения в существующий квест""")  
     
 def getKvestsOfEachRang(update: Update, context: CallbackContext):  
-    update.message.reply_text(  
-        "6 квестов"  
-        )  
+    ranks = [1,2,3]
+
+    for rank in ranks:
+        cursor.execute("SELECT * FROM kvest WHERE rank = %s", (rank,))
+        results = cursor.fetchall()
+
+        random_kvests = random.sample(results, min(6, len(results)))
+
+        for kvest in random_kvests:
+            kvest_name = kvest.get("nameOfKvest")
+            update.message.reply_text(f"Ранг {rank}: {kvest_name}")  
 
 def addNewKvest(update: Update, context: CallbackContext):  
     update.message.reply_text(  
@@ -76,5 +85,5 @@ the_updater.dispatcher.add_handler(MessageHandler(Filters.command, unknownCommma
 the_updater.dispatcher.add_handler(MessageHandler(Filters.text, unknownText))  
 
 
-# # running the bot  
-# the_updater.start_polling()  
+# running the bot  
+the_updater.start_polling()  
