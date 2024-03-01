@@ -33,10 +33,10 @@ def the_help(update: Update, context: CallbackContext):
         /changekvest - внести изменения в существующий квест""")  
     
 def getKvestsOfEachRang(update: Update, context: CallbackContext):  
-    ranks = [1,2,3]
+    ranks = [1,2]
 
     for rank in ranks:
-        cursor.execute("SELECT * FROM kvest WHERE rank = %s", (rank,))
+        cursor.execute("SELECT * FROM kvest WHERE idKvest = %s", (rank,))
         results = cursor.fetchall()
 
         random_kvests = random.sample(results, min(6, len(results)))
