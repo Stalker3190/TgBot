@@ -1,4 +1,5 @@
 # importing the required libraries and functions 
+from collections import namedtuple
 import random
 import mysql.connector 
 from telegram import Update
@@ -32,18 +33,27 @@ def the_help(update: Update, context: CallbackContext):
         /deletekvest - удалить квест  
         /changekvest - внести изменения в существующий квест""")  
     
-def getKvestsOfEachRang(update: Update, context: CallbackContext):  
-    ranks = [1,2]
+KvestRow = namedtuple('KvestRow', ['idKvest', 'nameOfKvest', 'context', 'requirements', 'reward', 'typeID', 'difficultID', 'rangID', 'nameOfRang'])
 
-    for rank in ranks:
-        cursor.execute("SELECT * FROM kvest WHERE idKvest = %s", (rank,))
+def getKvestsOfEachRang(update: Update, context: CallbackContext):  
+    
+    rangs = [1, 2]
+
+    for rang in rangs:
+        cursor.execute("SELECT k.*, r.nameOfRang FROM kvest k JOIN rang r ON k.rangID = r.idRang WHERE k.rangID = %s", (rang,))
         results = cursor.fetchall()
 
-        random_kvests = random.sample(results, min(6, len(results)))
+        kvest_rows = [KvestRow(*row) for row in results]
 
+        # Получите уникальное название ранга
+        rang_name = kvest_rows[0].nameOfRang
+        update.message.reply_text(f"Ранг {rang_name}:")
+
+        # Выведите шесть случайных квестов для этого ранга
+        random_kvests = random.sample(kvest_rows[1:], min(6, len(kvest_rows)-1))
         for kvest in random_kvests:
-            kvest_name = kvest.get("nameOfKvest")
-            update.message.reply_text(f"Ранг {rank}: {kvest_name}")  
+            kvest_name = kvest.nameOfKvest
+            update.message.reply_text(f"- {kvest_name}")  
 
 def addNewKvest(update: Update, context: CallbackContext):  
     update.message.reply_text(  
