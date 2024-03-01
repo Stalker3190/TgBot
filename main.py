@@ -37,7 +37,7 @@ KvestRow = namedtuple('KvestRow', ['idKvest', 'nameOfKvest', 'context', 'require
 
 def getKvestsOfEachRang(update: Update, context: CallbackContext):  
     
-    rangs = [1, 2]
+    rangs = [1, 2, 3]
 
     for rang in rangs:
         cursor.execute("SELECT k.*, r.nameOfRang FROM kvest k JOIN rang r ON k.rangID = r.idRang WHERE k.rangID = %s", (rang,))
